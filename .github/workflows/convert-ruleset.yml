@@ -1,0 +1,103 @@
+name: Auto Convert & Push Mihomo Ruleset
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *' # 每天 UTC 时间 00:00 自动执行
+
+# 必须要赋予 Action 写入代码仓库的权限
+permissions:
+  contents: write
+
+jobs:
+  build-and-convert:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Create rules directory
+        run: mkdir -p rules # 确保 rules 文件夹存在
+
+      - name: Download and Convert to Domain YAML
+        run: |
+          cat << 'EOF' > convert.py
+          import urllib.request
+          
+          url = "https://ruleset.skk.moe/Clash/non_ip/reject-no-drop.txt"
+          
+          req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
+          with urllib.request.urlopen(req) as response:
+              lines = response.read().decode('utf-8').splitlines()
+          
+          domains = []
+          for line in lines:
+              line = line.strip()
+              if not line or line.startswith('#'):
+                  continue
+                  
+              parts = line.split(',')
+              if len(parts) >= 2:
+                  rule_type = parts[0].upper()
+                  value = parts[1]
+                  
+                  # 放弃 KEYWORD 等无法转换为 domain 的类型
+                  if rule_type == 'DOMAIN':
+                      domains.append(value)
+                  elif rule_type == 'DOMAIN-SUFFIX':
+                      domains.append(f"+.{value}")
+                  elif rule_type == 'DOMAIN-WILDCARD':
+                      domains.append(value)
+          
+          # 直接写入到 rules 文件夹下
+          with open('rules/reject-no-drop.yaml', 'w', encoding='utf-8') as f:
+              f.write("payload:\n")
+              for domain in domains:
+                  f.write(f"  - '{domain}'\n")
+          
+          print(f"✅ 成功将 {len(domains)} 条规则转换为 YAML 格式并保存到 rules/！")
+          EOF
+          
+          python convert.py
+
+      - name: Download Mihomo Core
+        run: |
+          MIHOMO_VERSION=$(curl -sL "https://api.github.com/repos/MetaCubeX/mihomo/releases/latest" | jq -r .tag_name)
+          echo "🚀 Using Mihomo Version: $MIHOMO_VERSION"
+          
+          DOWNLOAD_URL="https://github.com/MetaCubeX/mihomo/releases/download/${MIHOMO_VERSION}/mihomo-linux-amd64-${MIHOMO_VERSION}.gz"
+          wget -qO mihomo.gz "$DOWNLOAD_URL"
+          gunzip mihomo.gz
+          chmod +x mihomo
+
+      - name: Compile to MRS Format
+        run: |
+          # 编译出的 mrs 文件同样直接存放到 rules 文件夹下
+          ./mihomo convert-ruleset domain yaml rules/reject-no-drop.yaml rules/reject-no-drop.mrs
+          echo "✅ MRS 编译完成！"
+
+      - name: Commit and Push to Repository
+        run: |
+          # 设置 Action 机器人为提交者信息
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # 追踪 rules 文件夹下的改动
+          git add rules/reject-no-drop.yaml
+          git add rules/reject-no-drop.mrs
+          
+          # 检查文件是否有发生变化，没有变化则跳过提交以避免 Action 报错
+          if git diff --staged --quiet; then
+            echo "✅ 在线规则内容未发生变化，无需提交"
+          else
+            # 使用 [skip ci] 防止触发不必要的其他 Actions 循环
+            git commit -m "Auto Update Mihomo Rules: $(date '+%Y-%m-%d %H:%M:%S') [skip ci]"
+            git push
+            echo "✅ 成功提交并推送到仓库的 rules 文件夹！"
+          fi
