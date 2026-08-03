@@ -80,6 +80,8 @@ jobs:
         run: |
           # 编译出的 mrs 文件同样直接存放到 rules 文件夹下
           ./mihomo convert-ruleset domain yaml rules/reject-no-drop.yaml rules/reject-no-drop.mrs
+          ./mihomo convert-ruleset domain yaml rules/direct.yaml rules/direct.mrs
+          ./mihomo convert-ruleset domain yaml rules/proxy.yaml rules/proxy.mrs
           echo "✅ MRS 编译完成！"
 
       - name: Commit and Push to Repository
@@ -91,6 +93,8 @@ jobs:
           # 追踪 rules 文件夹下的改动
           git add rules/reject-no-drop.yaml
           git add rules/reject-no-drop.mrs
+          git add rules/direct.mrs
+          git add rules/proxy.mrs
           
           # 检查文件是否有发生变化，没有变化则跳过提交以避免 Action 报错
           if git diff --staged --quiet; then
