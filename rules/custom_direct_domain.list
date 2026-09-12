@@ -39,8 +39,8 @@ domain:hub.rat.dev
 domain:hub.xdark.top
 domain:registry.dockermirror.com
 domain:hf-mirror.com
-keyword:synology
-keyword:quickconnect
+synology
+quickconnect
 domain:checkip.dyndns.org
 domain:checkipv6.dyndns.org
 domain:ifconfig.co
@@ -100,7 +100,7 @@ domain:minor-api-os.hoyoverse.com
 domain:sunrisecontent.akamaized.net
 domain:adobe.com
 domain:easytier.top
-keyword:m-team
+m-team
 domain:m-team.cc
 domain:m-team.io
 domain:manfuz.co

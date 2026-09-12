@@ -163,6 +163,11 @@ jobs:
                 output.write('# Xray routing rule format\n')
                 output.write(f'{marker}\n')
                 for rule in selected_rules:
+                  if path.endswith('_ip.list'):
+                    if rule.startswith(('ip:', 'CIDR:')):
+                      rule = rule.split(':', 1)[1]
+                  elif rule.startswith('keyword:'):
+                    rule = rule.split(':', 1)[1]
                   output.write(f'{rule}\n')
 
             ip_rules = [rule for rule in rules if rule.startswith(('geoip:', 'ip:', 'CIDR:'))]
@@ -232,6 +237,11 @@ jobs:
                 output.write('# Xray routing rule format\n')
                 output.write(f'{marker}\n')
                 for rule in selected_rules:
+                  if path.endswith('_ip.list'):
+                    if rule.startswith(('ip:', 'CIDR:')):
+                      rule = rule.split(':', 1)[1]
+                  elif rule.startswith('keyword:'):
+                    rule = rule.split(':', 1)[1]
                   output.write(f'{rule}\n')
 
             ip_rules = [rule for rule in rules if rule.startswith(('geoip:', 'ip:', 'CIDR:'))]
