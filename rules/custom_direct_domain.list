@@ -5,7 +5,6 @@ geosite:private
 geosite:google-cn
 geosite:category-games-cn
 geosite:category-public-tracker
-steamcloud
 domain:immortalwrt.org
 domain:tailscale.com
 domain:argotunnel.com
@@ -1370,3 +1369,4 @@ full:xz.pphimalayanrt.com
 domain:yukino.xyz
 domain:kazusa.uk
 domain:vsllm.cc
+steamcloud
