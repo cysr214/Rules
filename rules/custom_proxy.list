@@ -1,20 +1,21 @@
 # Generated from Aethersailor Custom_OpenClash_Rules
 # Xray routing rule format
 ip:207.241.224.2/32
-domain:services.googleapis.cn
-domain:platformio.org
-domain:onedrive.live.com
-domain:mtalk.google.com
-domain:ipify.org
-domain:ip.sb
-domain:hoyoverse.com
-domain:hoyolab.com
-domain:gstatic.com
-domain:googleapis.cn
-domain:dmhy.org
-domain:cloudsync-prod.s3.us-east-1.amazonaws.com
-domain:clientservices.googleapis.com
-domain:arduino.cc
-domain:7pzzv.us
 domain:stun.playstation.net
+domain:7pzzv.us
+domain:arduino.cc
+domain:clientservices.googleapis.com
+domain:cloudsync-prod.s3.us-east-1.amazonaws.com
+domain:dmhy.org
+domain:googleapis.cn
 domain:xn--ngstr-lra8j.com
+domain:gstatic.com
+domain:hoyoverse.com
+domain:ip.sb
+domain:ipify.org
+domain:mtalk.google.com
+domain:onedrive.live.com
+domain:platformio.org
+domain:services.googleapis.cn
+domain:hoyolab.com
+domain:loverslab.com

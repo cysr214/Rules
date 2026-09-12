@@ -141,17 +141,6 @@ jobs:
                 elif value:
                   add_rule(f'full:{value}')
 
-            with open('rules/proxy.yaml', encoding='utf-8') as source:
-              for line in source:
-                match = re.match(r'^\s*-\s*[\'\"]([^\'\"]+)[\'\"]', line)
-                if not match:
-                  continue
-                value = match.group(1)
-                if value.startswith('+.'):
-                  add_rule(f'domain:{value[2:]}')
-                elif value:
-                  add_rule(f'full:{value}')
-
             for rule in (
               'GEOSITE,private',
               'GEOIP,private',
@@ -215,6 +204,17 @@ jobs:
                     add_rule(f'ip:{value.split(",", 1)[1].split(",", 1)[0]}')
                   elif value.startswith('+.'):
                     add_rule(f'domain:{value[2:]}')
+
+            with open('rules/proxy.yaml', encoding='utf-8') as source:
+              for line in source:
+                match = re.match(r'^\s*-\s*[\'\"]([^\'\"]+)[\'\"]', line)
+                if not match:
+                  continue
+                value = match.group(1)
+                if value.startswith('+.'):
+                  add_rule(f'domain:{value[2:]}')
+                elif value:
+                  add_rule(f'full:{value}')
 
             def rule_group(rule):
               if rule.startswith('geoip:'):
