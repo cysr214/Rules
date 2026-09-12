@@ -2,7 +2,6 @@
 # Xray routing rule format
 #site
 geosite:private
-geosite:google-cn
 geosite:category-games@cn
 geosite:category-public-tracker
 domain:immortalwrt.org

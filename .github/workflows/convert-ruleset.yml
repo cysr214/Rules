@@ -150,7 +150,6 @@ jobs:
             for rule in (
               'GEOSITE,private',
               'GEOIP,private',
-              'GEOSITE,google-cn',
               'GEOSITE,category-games@cn',
               'GEOSITE,category-public-tracker',
             ):
