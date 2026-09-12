@@ -151,36 +151,20 @@ jobs:
               rule_type, value = rule.split(',', 1)
               add_rule(f'{rule_type.lower()}:{value}')
 
-            def rule_group(rule):
-              if rule.startswith('geoip:'):
-                return 0
-              if rule.startswith('ip:'):
-                return 1
-              if rule.startswith('geosite:'):
-                return 2
-              return 3
+            def write_rules(path, selected_rules, marker):
+              with open(path, 'w', encoding='utf-8') as output:
+                output.write('# Generated from Aethersailor Custom_OpenClash_Rules\n')
+                output.write('# Xray routing rule format\n')
+                output.write(f'{marker}\n')
+                for rule in selected_rules:
+                  output.write(f'{rule}\n')
 
-            rules.sort(key=rule_group)
+            ip_rules = [rule for rule in rules if rule.startswith(('geoip:', 'ip:'))]
+            domain_rules = [rule for rule in rules if not rule.startswith(('geoip:', 'ip:'))]
+            write_rules('rules/custom_direct_ip.list', ip_rules, '#ip')
+            write_rules('rules/custom_direct_domain.list', domain_rules, '#site')
 
-            with open('rules/custom_direct.list', 'w', encoding='utf-8') as output:
-              output.write('# Generated from Aethersailor Custom_OpenClash_Rules\n')
-              output.write('# Xray routing rule format\n')
-              previous_group = None
-              for rule in rules:
-                if rule.startswith('geoip:') or rule.startswith('ip:'):
-                  group = 'ip'
-                elif rule.startswith('geosite:'):
-                  group = 'site'
-                else:
-                  group = 'domain'
-                if group != previous_group and group == 'ip':
-                  output.write('#ip\n')
-                elif group != previous_group and group == 'site':
-                  output.write('#site\n')
-                output.write(f'{rule}\n')
-                previous_group = group
-
-            print(f'Converted {len(rules)} unique Xray rules; skipped {skipped} port rules.')
+            print(f'Converted {len(ip_rules)} IP rules and {len(domain_rules)} domain/site rules; skipped {skipped} port rules.')
             EOF
 
             python convert_xray.py
@@ -228,36 +212,20 @@ jobs:
                 elif value:
                   add_rule(f'full:{value}')
 
-            def rule_group(rule):
-              if rule.startswith('geoip:'):
-                return 0
-              if rule.startswith('ip:'):
-                return 1
-              if rule.startswith('geosite:'):
-                return 2
-              return 3
+            def write_rules(path, selected_rules, marker):
+              with open(path, 'w', encoding='utf-8') as output:
+                output.write('# Generated from Aethersailor Custom_OpenClash_Rules\n')
+                output.write('# Xray routing rule format\n')
+                output.write(f'{marker}\n')
+                for rule in selected_rules:
+                  output.write(f'{rule}\n')
 
-            rules.sort(key=rule_group)
+            ip_rules = [rule for rule in rules if rule.startswith(('geoip:', 'ip:'))]
+            domain_rules = [rule for rule in rules if not rule.startswith(('geoip:', 'ip:'))]
+            write_rules('rules/custom_proxy_ip.list', ip_rules, '#ip')
+            write_rules('rules/custom_proxy_domain.list', domain_rules, '#site')
 
-            with open('rules/custom_proxy.list', 'w', encoding='utf-8') as output:
-              output.write('# Generated from Aethersailor Custom_OpenClash_Rules\n')
-              output.write('# Xray routing rule format\n')
-              previous_group = None
-              for rule in rules:
-                if rule.startswith('geoip:') or rule.startswith('ip:'):
-                  group = 'ip'
-                elif rule.startswith('geosite:'):
-                  group = 'site'
-                else:
-                  group = 'domain'
-                if group != previous_group and group == 'ip':
-                  output.write('#ip\n')
-                elif group != previous_group and group == 'site':
-                  output.write('#site\n')
-                output.write(f'{rule}\n')
-                previous_group = group
-
-            print(f'Converted {len(rules)} unique Xray proxy rules.')
+            print(f'Converted {len(ip_rules)} IP rules and {len(domain_rules)} domain/site rules.')
             EOF
 
             python convert_proxy_xray.py
@@ -291,8 +259,10 @@ jobs:
           git add rules/reject-no-drop.mrs
           git add rules/direct.mrs
           git add rules/proxy.mrs
-          git add rules/custom_direct.list
-          git add rules/custom_proxy.list
+          git add rules/custom_direct_ip.list
+          git add rules/custom_direct_domain.list
+          git add rules/custom_proxy_ip.list
+          git add rules/custom_proxy_domain.list
           
           # 检查文件是否有发生变化，没有变化则跳过提交以避免 Action 报错
           if git diff --staged --quiet; then

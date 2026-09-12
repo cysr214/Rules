@@ -1,0 +1,4 @@
+# Generated from Aethersailor Custom_OpenClash_Rules
+# Xray routing rule format
+#ip
+ip:207.241.224.2/32
