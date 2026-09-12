@@ -156,6 +156,8 @@ jobs:
               rule_type, value = rule.split(',', 1)
               add_rule(f'{rule_type.lower()}:{value}')
 
+            add_rule('keyword:steamcloud')
+
             def write_rules(path, selected_rules, marker):
               with open(path, 'w', encoding='utf-8') as output:
                 output.write('# Generated from Aethersailor Custom_OpenClash_Rules\n')
