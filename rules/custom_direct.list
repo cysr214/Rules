@@ -1,5 +1,6 @@
 # Generated from Aethersailor Custom_OpenClash_Rules
 # Xray routing rule format
+#ip
 geoip:private
 ip:198.41.192.0/24
 ip:198.41.200.0/24
@@ -44,6 +45,7 @@ ip:205.196.6.0/24
 ip:208.64.200.0/22
 ip:208.78.164.0/22
 ip:45.121.184.0/24
+#site
 geosite:private
 geosite:google-cn
 geosite:category-games@cn
