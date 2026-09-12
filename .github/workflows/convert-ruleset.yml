@@ -66,6 +66,178 @@ jobs:
           
           python convert.py
 
+      - name: Download and Convert Custom Rules to Xray Format
+        run: |
+            cat << 'EOF' > convert_xray.py
+            import re
+            import urllib.request
+
+            sources = {
+              'custom_direct': 'https://raw.githubusercontent.com/Aethersailor/Custom_OpenClash_Rules/refs/heads/main/rule/Custom_Direct.list',
+              'custom_direct_ip': 'https://raw.githubusercontent.com/Aethersailor/Custom_OpenClash_Rules/refs/heads/main/rule/Custom_Direct_Classical_IP.yaml',
+              'game_domain': 'https://raw.githubusercontent.com/Aethersailor/Custom_OpenClash_Rules/refs/heads/main/rule/Game_Download_CDN_Domain.yaml',
+              'game_ip': 'https://raw.githubusercontent.com/Aethersailor/Custom_OpenClash_Rules/refs/heads/main/rule/Game_Download_CDN_IP.yaml',
+            }
+            headers = {'User-Agent': 'Mozilla/5.0'}
+            rules = []
+            seen = set()
+            skipped = 0
+
+            def add_rule(rule):
+              if rule not in seen:
+                seen.add(rule)
+                rules.append(rule)
+
+            def fetch(name):
+              request = urllib.request.Request(sources[name], headers=headers)
+              with urllib.request.urlopen(request, timeout=30) as response:
+                return response.read().decode('utf-8').splitlines()
+
+            for line in fetch('custom_direct'):
+              line = line.strip()
+              if not line or line.startswith('#'):
+                continue
+              parts = [part.strip() for part in line.split(',')]
+              rule_type = parts[0].upper()
+              if len(parts) < 2:
+                continue
+              value = parts[1]
+              if rule_type == 'DOMAIN-SUFFIX':
+                add_rule(f'domain:{value}')
+              elif rule_type == 'DOMAIN':
+                add_rule(f'full:{value}')
+              elif rule_type == 'DOMAIN-KEYWORD':
+                add_rule(f'keyword:{value}')
+              elif rule_type == 'IP-CIDR':
+                add_rule(f'ip:{value}')
+              elif rule_type in ('DST-PORT', 'SRC-PORT'):
+                skipped += 1
+
+            for name in ('custom_direct_ip', 'game_ip'):
+              for line in fetch(name):
+                match = re.match(r'^\s*-\s*[\'\"]?([^\'\"\s]+)', line)
+                if match and ('/' in match.group(1) or re.match(r'^\d+\.\d+\.\d+\.\d+$', match.group(1))):
+                  add_rule(f'ip:{match.group(1)}')
+
+            for name in ('game_domain',):
+              for line in fetch(name):
+                match = re.match(r'^\s*-\s*[\'\"]([^\'\"]+)[\'\"]', line)
+                if not match:
+                  continue
+                value = match.group(1)
+                if value.startswith('+.'):
+                  add_rule(f'domain:{value[2:]}')
+                elif value:
+                  add_rule(f'full:{value}')
+
+            with open('rules/direct.yaml', encoding='utf-8') as source:
+              for line in source:
+                match = re.match(r'^\s*-\s*[\'\"]([^\'\"]+)[\'\"]', line)
+                if not match:
+                  continue
+                value = match.group(1)
+                if value.startswith('+.'):
+                  add_rule(f'domain:{value[2:]}')
+                elif value:
+                  add_rule(f'full:{value}')
+
+            with open('rules/proxy.yaml', encoding='utf-8') as source:
+              for line in source:
+                match = re.match(r'^\s*-\s*[\'\"]([^\'\"]+)[\'\"]', line)
+                if not match:
+                  continue
+                value = match.group(1)
+                if value.startswith('+.'):
+                  add_rule(f'domain:{value[2:]}')
+                elif value:
+                  add_rule(f'full:{value}')
+
+            for rule in (
+              'GEOSITE,private',
+              'GEOIP,private',
+              'GEOSITE,google-cn',
+              'GEOSITE,category-games@cn',
+              'GEOSITE,category-public-tracker',
+            ):
+              rule_type, value = rule.split(',', 1)
+              add_rule(f'{rule_type.lower()}:{value}')
+
+            def rule_group(rule):
+              if rule.startswith('geoip:'):
+                return 0
+              if rule.startswith('ip:'):
+                return 1
+              if rule.startswith('geosite:'):
+                return 2
+              return 3
+
+            rules.sort(key=rule_group)
+
+            with open('rules/custom_direct.list', 'w', encoding='utf-8') as output:
+              output.write('# Generated from Aethersailor Custom_OpenClash_Rules\n')
+              output.write('# Xray routing rule format\n')
+              for rule in rules:
+                output.write(f'{rule}\n')
+
+            print(f'Converted {len(rules)} unique Xray rules; skipped {skipped} port rules.')
+            EOF
+
+            python convert_xray.py
+
+      - name: Download and Convert Custom Proxy Rules to Xray Format
+        run: |
+            cat << 'EOF' > convert_proxy_xray.py
+            import re
+            import urllib.request
+
+            sources = (
+              'https://raw.githubusercontent.com/Aethersailor/Custom_OpenClash_Rules/refs/heads/main/rule/Custom_Proxy_Classical_IP.yaml',
+              'https://raw.githubusercontent.com/Aethersailor/Custom_OpenClash_Rules/refs/heads/main/rule/Custom_Proxy_Domain.yaml',
+            )
+            headers = {'User-Agent': 'Mozilla/5.0'}
+            rules = []
+            seen = set()
+
+            def add_rule(rule):
+              if rule not in seen:
+                seen.add(rule)
+                rules.append(rule)
+
+            for url in sources:
+              request = urllib.request.Request(url, headers=headers)
+              with urllib.request.urlopen(request, timeout=30) as response:
+                for line in response.read().decode('utf-8').splitlines():
+                  match = re.match(r'^\s*-\s*[\'\"]?([^\'\"]+?)[\'\"]?\s*$', line)
+                  if not match:
+                    continue
+                  value = match.group(1)
+                  if value.startswith('IP-CIDR,'):
+                    add_rule(f'ip:{value.split(",", 1)[1].split(",", 1)[0]}')
+                  elif value.startswith('+.'):
+                    add_rule(f'domain:{value[2:]}')
+
+            def rule_group(rule):
+              if rule.startswith('geoip:'):
+                return 0
+              if rule.startswith('ip:'):
+                return 1
+              if rule.startswith('geosite:'):
+                return 2
+              return 3
+
+            rules.sort(key=rule_group)
+
+            with open('rules/custom_proxy.list', 'w', encoding='utf-8') as output:
+              output.write('# Generated from Aethersailor Custom_OpenClash_Rules\n')
+              output.write('# Xray routing rule format\n')
+              for rule in rules:
+                output.write(f'{rule}\n')
+
+            print(f'Converted {len(rules)} unique Xray proxy rules.')
+            EOF
+
+            python convert_proxy_xray.py
+
       - name: Download Mihomo Core
         run: |
           MIHOMO_VERSION=$(curl -sL "https://api.github.com/repos/MetaCubeX/mihomo/releases/latest" | jq -r .tag_name)
@@ -95,6 +267,8 @@ jobs:
           git add rules/reject-no-drop.mrs
           git add rules/direct.mrs
           git add rules/proxy.mrs
+          git add rules/custom_direct.list
+          git add rules/custom_proxy.list
           
           # 检查文件是否有发生变化，没有变化则跳过提交以避免 Action 报错
           if git diff --staged --quiet; then
