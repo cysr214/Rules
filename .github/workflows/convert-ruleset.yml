@@ -165,8 +165,20 @@ jobs:
             with open('rules/custom_direct.list', 'w', encoding='utf-8') as output:
               output.write('# Generated from Aethersailor Custom_OpenClash_Rules\n')
               output.write('# Xray routing rule format\n')
+              previous_group = None
               for rule in rules:
+                if rule.startswith('geoip:') or rule.startswith('ip:'):
+                  group = 'ip'
+                elif rule.startswith('geosite:'):
+                  group = 'site'
+                else:
+                  group = 'domain'
+                if group != previous_group and group == 'ip':
+                  output.write('#ip\n')
+                elif group != previous_group and group == 'site':
+                  output.write('#site\n')
                 output.write(f'{rule}\n')
+                previous_group = group
 
             print(f'Converted {len(rules)} unique Xray rules; skipped {skipped} port rules.')
             EOF
@@ -230,8 +242,20 @@ jobs:
             with open('rules/custom_proxy.list', 'w', encoding='utf-8') as output:
               output.write('# Generated from Aethersailor Custom_OpenClash_Rules\n')
               output.write('# Xray routing rule format\n')
+              previous_group = None
               for rule in rules:
+                if rule.startswith('geoip:') or rule.startswith('ip:'):
+                  group = 'ip'
+                elif rule.startswith('geosite:'):
+                  group = 'site'
+                else:
+                  group = 'domain'
+                if group != previous_group and group == 'ip':
+                  output.write('#ip\n')
+                elif group != previous_group and group == 'site':
+                  output.write('#site\n')
                 output.write(f'{rule}\n')
+                previous_group = group
 
             print(f'Converted {len(rules)} unique Xray proxy rules.')
             EOF
