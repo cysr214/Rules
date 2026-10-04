@@ -6,6 +6,7 @@ geosite:google-cn
 geosite:category-games-cn
 geosite:category-public-tracker
 domain:immortalwrt.org
+domain:r2s.site
 domain:tailscale.com
 domain:argotunnel.com
 domain:cftunnel.com
@@ -1424,4 +1425,6 @@ full:xz.pphimalayanrt.com
 domain:yukino.xyz
 domain:kazusa.uk
 domain:vsllm.cc
+domain:vsean.net
+full:store.steampowered.com
 steamcloud
