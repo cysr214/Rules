@@ -6,7 +6,6 @@ geosite:google-cn
 geosite:category-games-cn
 geosite:category-public-tracker
 domain:immortalwrt.org
-domain:r2s.site
 domain:tailscale.com
 domain:argotunnel.com
 domain:cftunnel.com
@@ -156,6 +155,9 @@ domain:terrabbs.ink
 domain:yingshi.dog
 domain:code-relay.com
 domain:ahlt10010.com
+domain:cbn.id
+domain:sollin.top
+domain:12zayb.com
 domain:iq.com
 domain:ectaiping.com
 domain:twtapp.com
