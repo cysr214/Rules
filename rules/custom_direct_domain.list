@@ -5,7 +5,6 @@ geosite:private
 geosite:google-cn
 geosite:category-games-cn
 geosite:category-public-tracker
-domain:immortalwrt.org
 domain:tailscale.com
 domain:argotunnel.com
 domain:cftunnel.com
@@ -155,6 +154,7 @@ domain:terrabbs.ink
 domain:yingshi.dog
 domain:code-relay.com
 domain:ahlt10010.com
+domain:hanzhe.site
 domain:taotoken.net
 domain:baoku.one
 domain:browserscan.net
