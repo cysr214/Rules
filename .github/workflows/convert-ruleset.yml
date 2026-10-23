@@ -174,8 +174,10 @@ jobs:
 
             ip_rules = [rule for rule in rules if rule.startswith(('geoip:', 'ip:', 'CIDR:'))]
             domain_rules = [rule for rule in rules if not rule.startswith(('geoip:', 'ip:', 'CIDR:'))]
-            ip_rules.sort(key=lambda rule: 0 if rule.startswith('geoip:') else 1)
-            domain_rules.sort(key=lambda rule: 0 if rule.startswith('geosite:') else 1)
+            # 全序稳定排序：同桶内再按规则字面量排序，使输出只取决于规则集合本身，
+            # 不受上游源文件行序影响；内容不变时输出字节恒定，避免规则重排触发下游无谓重载。
+            ip_rules.sort(key=lambda rule: (0 if rule.startswith('geoip:') else 1, rule))
+            domain_rules.sort(key=lambda rule: (0 if rule.startswith('geosite:') else 1, rule))
             write_rules('rules/custom_direct_ip.list', ip_rules, '#ip')
             write_rules('rules/custom_direct_domain.list', domain_rules, '#site')
 
@@ -248,8 +250,10 @@ jobs:
 
             ip_rules = [rule for rule in rules if rule.startswith(('geoip:', 'ip:', 'CIDR:'))]
             domain_rules = [rule for rule in rules if not rule.startswith(('geoip:', 'ip:', 'CIDR:'))]
-            ip_rules.sort(key=lambda rule: 0 if rule.startswith('geoip:') else 1)
-            domain_rules.sort(key=lambda rule: 0 if rule.startswith('geosite:') else 1)
+            # 全序稳定排序：同桶内再按规则字面量排序，使输出只取决于规则集合本身，
+            # 不受上游源文件行序影响；内容不变时输出字节恒定，避免规则重排触发下游无谓重载。
+            ip_rules.sort(key=lambda rule: (0 if rule.startswith('geoip:') else 1, rule))
+            domain_rules.sort(key=lambda rule: (0 if rule.startswith('geosite:') else 1, rule))
             write_rules('rules/custom_proxy_ip.list', ip_rules, '#ip')
             write_rules('rules/custom_proxy_domain.list', domain_rules, '#site')
 
