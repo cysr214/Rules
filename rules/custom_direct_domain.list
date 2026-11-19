@@ -149,7 +149,6 @@ domain:aoc.com
 domain:aocdisplays.com
 domain:aoxox.com
 domain:ap-leasing.com
-domain:api.myip.com
 domain:apm-log-upload-os.hoyoverse.com
 domain:appracle.com
 domain:aqtwwx.net
@@ -234,8 +233,6 @@ domain:chaoway.net
 domain:chatlabs.net
 domain:chaxunjiao.com
 domain:chaz.fun
-domain:checkip.dyndns.org
-domain:checkipv6.dyndns.org
 domain:chengguodj.com
 domain:chenyuxia.com
 domain:cheriexsky.love
@@ -254,6 +251,7 @@ domain:ciallo.party
 domain:cilizhai.net
 domain:cindy.app
 domain:ciyuancenter.cc
+domain:claisly.com
 domain:clivia.fun
 domain:cloudllll.com
 domain:cloudseekr.com
@@ -437,7 +435,6 @@ domain:github.boki.moe
 domain:github.moeyy.xyz
 domain:github.site
 domain:github.store
-domain:giveup.top
 domain:gjjwgp3n.com
 domain:gjtool.com
 domain:gmoj.net
@@ -569,7 +566,6 @@ domain:idc.cash
 domain:idphotoplus.com
 domain:idsduf.com
 domain:ifawj9hvvl.com
-domain:ifconfig.co
 domain:ifengmap.com
 domain:ifish7.com
 domain:iflytck.com
@@ -591,8 +587,6 @@ domain:iot889.com
 domain:iotrix.net
 domain:ip.plus
 domain:ip159.com
-domain:ip6.seeip.org
-domain:ipapi.co
 domain:ipjrh.com
 domain:iposl.com
 domain:ipshu.com
@@ -640,6 +634,7 @@ domain:kaijiejinrong.com
 domain:kaipanhong.com
 domain:kamhing.net
 domain:kancaibao.com
+domain:kanv7k.live
 domain:kanxiquan.com
 domain:kaspersky-labs.com
 domain:kaspersky.com
@@ -653,7 +648,6 @@ domain:kejiweixun.com
 domain:kelexuexi.com
 domain:keyoo.com
 domain:kgithub.com
-domain:kit327.com
 domain:kiwiot.com
 domain:kke.com.hk
 domain:kkmmy.com
@@ -1086,6 +1080,7 @@ domain:vgogbuy.com
 domain:vip-cdn.com
 domain:vip666ai.com
 domain:vipjiapu.com
+domain:visaselectrewardhk.com
 domain:visionariopro.com
 domain:vlan5.com
 domain:volcanomob.com
@@ -1109,7 +1104,9 @@ domain:wera.eu.org
 domain:weshape3d.com
 domain:wetolink.com
 domain:wewillpro.com
+domain:wget.la
 domain:wildfirechat.net
+domain:wirefee.site
 domain:wisecleaner.net
 domain:wjx.top
 domain:wlcdn88.com
@@ -1127,6 +1124,7 @@ domain:wuhanjijin.com
 domain:wwwh.eu.org
 domain:wwwwqq.com
 domain:wxdw.top
+domain:wyswgb.com
 domain:x-gpu.com
 domain:x86pi.com
 domain:xaippc.com
@@ -1195,6 +1193,7 @@ domain:ycoo.net
 domain:ycyct.com
 domain:ydayc.com
 domain:yeguodj.com
+domain:ygdj17.com
 domain:yhxjkj.top
 domain:yi-ll.com
 domain:yibanbianji.com
@@ -1206,6 +1205,7 @@ domain:yiso.fun
 domain:yixc.com
 domain:yixlab.com
 domain:yldw.net
+domain:ymm56-cdn.com
 domain:ymwfy.com
 domain:ymzec.com
 domain:ynsj001.com
@@ -1252,9 +1252,11 @@ domain:zjxhedu.com
 domain:zllinks.com
 domain:zmaticoo.com
 domain:zmis.me
+domain:znigddzwz.cc
 domain:znnu.com
 domain:znztv.com
 domain:zqin758.xyz
+domain:zsdc.eu.org
 domain:zsytit.com
 domain:ztytech.com
 domain:zudanje.com
